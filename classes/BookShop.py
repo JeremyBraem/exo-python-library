@@ -1,9 +1,10 @@
 import jsonpickle
+from .Book import Book
 
-class BookShop : 
-    def __init__(self, shop_name, books):
-        self.shop_name = shop_name
-        self.books = books
+class BookShop:
+    def __init__(self, shop_name = "", books = []):
+        self.__shop_name = shop_name
+        self.__books = books
 
     @property
     def shop_name(self):
@@ -24,15 +25,20 @@ class BookShop :
         return False
     
     def save_in_json(self):
-        with open("books.json", "a") as f:
+        with open("books.json", "w") as f:
             f.write(jsonpickle.encode(self))
 
-    def get_json_file(self):
+    def get_json_file(self): #FIXME: return type BookShop
         book_shop_data = None
         with open("books.json", "r") as f:
-            book_shop_data = jsonpickle.decode(f.read)
-            
+            book_shop_data = jsonpickle.decode(f.read())
+        self.__shop_name = book_shop_data.shop_name
+        self.__books = book_shop_data._BookShop__books
         return book_shop_data
 
-
-            
+    @classmethod
+    def get_json_file_cls(cls): #FIXME: return type BookShop
+        book_shop_data = None
+        with open("books.json", "r") as f:
+            book_shop_data = jsonpickle.decode(f.read(), classes = [Book, BookShop])
+        return book_shop_data
